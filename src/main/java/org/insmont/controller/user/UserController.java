@@ -21,7 +21,6 @@ import com.google.gson.Gson;
 import jakarta.annotation.Resource;
 import lombok.SneakyThrows;
 import org.insmont.model.CodeMessage;
-import org.insmont.model.CodeMessageData;
 import org.insmont.service.user.UserService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,9 +48,11 @@ public class UserController {
     @SneakyThrows
     @PostMapping("register")
     public String registerUser(String key,String password){
+        if (key == null || password == null || key.isEmpty() || password.isEmpty())
+            return gson.toJson(new CodeMessage(400,"邮箱或手机号为空"));
         return switch (userService.register(key, password)) {
-            case "400" -> gson.toJson(new CodeMessage(400,"手机号或邮箱格式错误"));
-            case "403" -> gson.toJson(new CodeMessage(403,"账号已存在"));
+            case "400" -> gson.toJson(new CodeMessage(401,"手机号或邮箱格式错误"));
+            case "403" -> gson.toJson(new CodeMessage(402,"账号已存在"));
             case "200" -> gson.toJson(new CodeMessage(200,"注册成功"));
             default -> gson.toJson(new CodeMessage(500,"未知错误"));
         };
