@@ -38,10 +38,21 @@
         values (#{id}, #{device}, #{ipv4}, #{ipv6}, #{location}, now())
     </insert>
 
+    <insert id="insertProfileAvatarWithId">
+        insert into profile (id, avatar)
+        values (#{id}, #{avatar})
+    </insert>
+
     <update id="updateUserToken">
         update user
         set session = #{token},
             expired = #{expired}
+        where id = #{id}
+    </update>
+
+    <update id="updateProfileLocationWithId">
+        update profile
+        set location = #{location}
         where id = #{id}
     </update>
 
@@ -84,5 +95,44 @@
         where id = #{id}
         order by datetime desc
         limit 1
+    </select>
+
+    <select id="selectUserTokenById" resultType="org.insmont.beans.user.User">
+        select id, session
+        from user
+        where id = #{id}
+    </select>
+
+    <select id="getUserProfileWithId" resultType="org.insmont.beans.user.Profile">
+        select id,
+               avatar,
+               bio,
+               location,
+               gender,
+               birthday,
+               constellation,
+               certification,
+               state,
+               credit,
+               verification
+        from profile
+        where id = #{id}
+    </select>
+
+    <select id="getAllUserInfoWithId" resultType="org.insmont.beans.user.User">
+        select id,
+               username,
+               email,
+               mobile_code,
+               mobile,
+               password,
+               session,
+               expired,
+               registration_date,
+               registration_ipv4,
+               registration_ipv6,
+               registration_region
+        from user
+        where id = #{id}
     </select>
 </mapper>
